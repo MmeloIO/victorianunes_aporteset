@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ordem de Aporte | Victória Nunes</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --navy:#1E2761;
+    --navy-deep:#141B4D;
+    --gold:#C9A84C;
+    --gold-soft:#E4CE8C;
+    --bg:#0A0C1A;
+    --card:#12173A;
+    --card-border:rgba(201,168,76,0.18);
+    --text:#EDEFF7;
+    --text-dim:#9AA0C0;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{
+    background:var(--bg);
+    color:var(--text);
+    font-family:'DM Sans',sans-serif;
+    min-height:100vh;
+    -webkit-font-smoothing:antialiased;
+  }
+  h1,h2,h3{font-family:'Playfair Display',serif;font-weight:600;}
+
+  /* ---------- LOCK SCREEN ---------- */
+  #lock{
+    position:fixed;inset:0;
+    background:radial-gradient(circle at 50% 20%, var(--navy-deep), var(--bg) 70%);
+    display:flex;align-items:center;justify-content:center;
+    z-index:100;
+    padding:24px;
+  }
+  .lock-box{
+    background:var(--card);
+    border:1px solid var(--card-border);
+    border-radius:16px;
+    padding:44px 36px;
+    max-width:380px;
+    width:100%;
+    text-align:center;
+    box-shadow:0 20px 60px rgba(0,0,0,0.5);
+  }
+  .lock-box .eyebrow{color:var(--gold);letter-spacing:2px;font-size:11px;text-transform:uppercase;margin-bottom:10px;display:block;}
+  .lock-box h1{font-size:22px;color:var(--text);margin-bottom:6px;}
+  .lock-box p{color:var(--text-dim);font-size:13px;margin-bottom:26px;}
+  .lock-box input{
+    width:100%;padding:13px 16px;border-radius:10px;
+    border:1px solid var(--card-border);
+    background:#0D1130;color:var(--text);
+    font-size:15px;margin-bottom:14px;outline:none;
+    font-family:'DM Sans',sans-serif;
+    letter-spacing:1px;
+  }
+  .lock-box input:focus{border-color:var(--gold);}
+  .lock-box button{
+    width:100%;padding:13px;border-radius:10px;border:none;
+    background:linear-gradient(135deg,var(--gold),#B08F3A);
+    color:#1a1400;font-weight:700;font-size:14px;cursor:pointer;
+    letter-spacing:0.5px;
+  }
+  .lock-error{color:#E77;font-size:12px;margin-top:10px;height:14px;}
+
+  /* ---------- MAIN CONTENT ---------- */
+  #content{display:none;max-width:760px;margin:0 auto;padding:56px 24px 80px;}
+  .header{text-align:center;margin-bottom:44px;}
+  .header .eyebrow{color:var(--gold);letter-spacing:3px;font-size:11px;text-transform:uppercase;}
+  .header h1{font-size:30px;margin:10px 0 6px;}
+  .header .client{color:var(--text-dim);font-size:15px;}
+  .header .date{color:var(--text-dim);font-size:12px;margin-top:4px;}
+
+  .total-card{
+    background:linear-gradient(135deg,var(--navy),var(--navy-deep));
+    border:1px solid var(--card-border);
+    border-radius:16px;
+    padding:28px;
+    text-align:center;
+    margin-bottom:36px;
+  }
+  .total-card .label{color:var(--gold-soft);font-size:12px;text-transform:uppercase;letter-spacing:2px;}
+  .total-card .value{font-family:'Playfair Display',serif;font-size:40px;color:#fff;margin-top:6px;}
+
+  .section-title{
+    color:var(--gold);
+    font-size:12px;
+    text-transform:uppercase;
+    letter-spacing:2px;
+    margin:36px 0 16px;
+    display:flex;align-items:center;gap:10px;
+  }
+  .section-title::after{content:"";flex:1;height:1px;background:var(--card-border);}
+
+  .asset-card{
+    background:var(--card);
+    border:1px solid var(--card-border);
+    border-radius:14px;
+    padding:22px 24px;
+    margin-bottom:14px;
+  }
+  .asset-top{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;}
+  .asset-name{font-family:'Playfair Display',serif;font-size:18px;color:#fff;}
+  .asset-tag{color:var(--text-dim);font-size:12.5px;margin-top:3px;}
+  .asset-amount{font-size:20px;font-weight:700;color:var(--gold-soft);white-space:nowrap;}
+
+  .segment-badge{
+    display:inline-block;
+    margin-top:8px;
+    padding:3px 11px;
+    border:1px solid var(--card-border);
+    border-radius:20px;
+    font-size:10px;
+    color:var(--gold-soft);
+    letter-spacing:0.6px;
+    text-transform:uppercase;
+    background:rgba(201,168,76,0.06);
+  }
+
+  .asset-detail{
+    margin-top:16px;padding-top:16px;
+    border-top:1px dashed var(--card-border);
+    display:grid;grid-template-columns:repeat(3,1fr);gap:12px;
+  }
+  .asset-detail div{text-align:center;}
+  .asset-detail .k{color:var(--text-dim);font-size:11px;text-transform:uppercase;letter-spacing:0.5px;}
+  .asset-detail .v{font-size:15px;font-weight:700;color:#fff;margin-top:3px;}
+
+  .note{
+    background:rgba(201,168,76,0.07);
+    border:1px solid var(--card-border);
+    border-radius:12px;
+    padding:16px 18px;
+    font-size:13px;
+    color:var(--text-dim);
+    line-height:1.6;
+    margin-top:8px;
+  }
+  .note b{color:var(--gold-soft);}
+
+  .check-block{margin-top:36px;}
+  .check-total{
+    display:flex;justify-content:space-between;
+    padding:16px 20px;
+    background:var(--card);
+    border:1px solid var(--gold);
+    border-radius:12px;
+    font-size:15px;
+  }
+  .check-total .k{color:var(--text-dim);}
+  .check-total .v{color:var(--gold-soft);font-weight:700;font-family:'Playfair Display',serif;font-size:18px;}
+
+  .signature{
+    margin-top:56px;
+    text-align:center;
+    padding-top:28px;
+    border-top:1px solid var(--card-border);
+  }
+  .signature .name{font-family:'Playfair Display',serif;font-size:17px;color:#fff;}
+  .signature .role{color:var(--gold);font-size:12px;letter-spacing:1px;margin-top:3px;}
+  .signature .firm{color:var(--text-dim);font-size:12px;margin-top:8px;}
+
+  @media (max-width:480px){
+    .asset-detail{grid-template-columns:1fr 1fr;}
+    .asset-top{flex-direction:column;}
+    .asset-amount{font-size:18px;}
+  }
+</style>
+</head>
+<body>
+
+<div id="lock">
+  <div class="lock-box">
+    <span class="eyebrow">Grão · Grupo Primo</span>
+    <h1>Ordem de Aporte</h1>
+    <p>Documento confidencial de Victória Nunes</p>
+    <input type="password" id="pwd" placeholder="Digite a senha de acesso" autocomplete="off">
+    <button onclick="tryUnlock()">Acessar documento</button>
+    <div class="lock-error" id="err"></div>
+  </div>
+</div>
+
+<div id="content">
+
+  <div class="header">
+    <span class="eyebrow">Grão · Grupo Primo</span>
+    <h1>Ordem de Aporte</h1>
+    <div class="client">Victória Nunes</div>
+    <div class="date">Setembro de 2026</div>
+  </div>
+
+  <div class="total-card">
+    <div class="label">Valor total do aporte</div>
+    <div class="value">R$ 5.200,00</div>
+  </div>
+
+  <div class="section-title">Renda fixa</div>
+  <div class="asset-card">
+    <div class="asset-top">
+      <div>
+        <div class="asset-name">Tesouro Selic 2031</div>
+        <div class="asset-tag">Reserva de oportunidade e liquidez</div>
+        <div class="segment-badge">Título público federal · Pós-fixado</div>
+      </div>
+      <div class="asset-amount">R$ 4.937,40</div>
+    </div>
+  </div>
+
+  <div class="section-title">Renda variável · Ações e Negócios</div>
+  <div class="asset-card">
+    <div class="asset-top">
+      <div>
+        <div class="asset-name">BRBI11</div>
+        <div class="asset-tag">BR Partners · Ação (unit)</div>
+        <div class="segment-badge">Intermediários Financeiros</div>
+      </div>
+      <div class="asset-amount">R$ 28,50</div>
+    </div>
+    <div class="asset-detail">
+      <div><div class="k">Ações</div><div class="v">2</div></div>
+      <div><div class="k">Preço/ação</div><div class="v">R$ 14,25</div></div>
+      <div><div class="k">Total</div><div class="v">R$ 28,50</div></div>
+    </div>
+  </div>
+
+  <div class="asset-card">
+    <div class="asset-top">
+      <div>
+        <div class="asset-name">WIZC3</div>
+        <div class="asset-tag">Wiz Co · Ação ordinária</div>
+        <div class="segment-badge">Previdência e Seguros</div>
+      </div>
+      <div class="asset-amount">R$ 8,07</div>
+    </div>
+    <div class="asset-detail">
+      <div><div class="k">Ações</div><div class="v">1</div></div>
+      <div><div class="k">Preço/ação</div><div class="v">R$ 8,07</div></div>
+      <div><div class="k">Total</div><div class="v">R$ 8,07</div></div>
+    </div>
+  </div>
+
+  <div class="section-title">Fundos imobiliários</div>
+
+  <div class="asset-card">
+    <div class="asset-top">
+      <div>
+        <div class="asset-name">CPTS11</div>
+        <div class="asset-tag">Capitania Securities II · FII de papel</div>
+        <div class="segment-badge">Recebíveis Imobiliários (Papel)</div>
+      </div>
+      <div class="asset-amount">R$ 142,69</div>
+    </div>
+    <div class="asset-detail">
+      <div><div class="k">Cotas</div><div class="v">19</div></div>
+      <div><div class="k">Preço/cota</div><div class="v">R$ 7,51</div></div>
+      <div><div class="k">Total</div><div class="v">R$ 142,69</div></div>
+    </div>
+  </div>
+
+  <div class="asset-card">
+    <div class="asset-top">
+      <div>
+        <div class="asset-name">XPCI11</div>
+        <div class="asset-tag">XP Crédito Imobiliário · FII de papel</div>
+        <div class="segment-badge">Recebíveis Imobiliários (Papel)</div>
+      </div>
+      <div class="asset-amount">R$ 79,45</div>
+    </div>
+    <div class="asset-detail">
+      <div><div class="k">Cotas</div><div class="v">1</div></div>
+      <div><div class="k">Preço/cota</div><div class="v">R$ 79,45</div></div>
+      <div><div class="k">Total</div><div class="v">R$ 79,45</div></div>
+    </div>
+  </div>
+
+  <div class="note" style="margin-top:4px;">
+    Cotações de referência: CPTS11 R$ 7,51, XPCI11 R$ 79,45, BRBI11 R$ 14,25 e WIZC3 R$ 8,07. As quantidades foram calculadas para maximizar o número de cotas/ações inteiras dentro do valor destinado a cada ativo. Cotações podem variar levemente até o momento da execução da ordem.
+  </div>
+
+  <div class="check-block">
+    <div class="check-total">
+      <span class="k">Total alocado nesta rodada</span>
+      <span class="v">R$ 5.196,11</span>
+    </div>
+  </div>
+
+  <div class="note" style="margin-top:12px;">
+    Residual de <b>R$ 3,89</b> não alocável em cota inteira nesta rodada — soma-se ao próximo aporte.
+  </div>
+
+  <div class="signature">
+    <div class="name">Matheus Melo</div>
+    <div class="role">MASTER PLANNER</div>
+    <div class="firm">Grão | Grupo Primo</div>
+  </div>
+
+</div>
+
+<script>
+  const PASSWORD = "victoria2026";
+  function tryUnlock(){
+    const val = document.getElementById('pwd').value.trim().toLowerCase();
+    if(val === PASSWORD){
+      document.getElementById('lock').style.display='none';
+      document.getElementById('content').style.display='block';
+    } else {
+      document.getElementById('err').textContent = 'Senha incorreta. Tente novamente.';
+    }
+  }
+  document.getElementById('pwd').addEventListener('keyup', function(e){
+    if(e.key === 'Enter'){ tryUnlock(); }
+  });
+</script>
+
+</body>
+</html>
